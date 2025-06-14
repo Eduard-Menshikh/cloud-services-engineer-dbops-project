@@ -1,4 +1,4 @@
-ALTER TABLE productAdd commentMore actions
+ALTER TABLE product
     ADD COLUMN price DOUBLE PRECISION;
 
 ALTER TABLE orders

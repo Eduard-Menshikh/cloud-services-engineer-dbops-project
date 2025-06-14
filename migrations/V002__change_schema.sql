@@ -1,8 +1,14 @@
 ALTER TABLE product
     ADD COLUMN price DOUBLE PRECISION;
 
+ALTER TABLE product
+    ADD CONSTRAINT product_pkey PRIMARY KEY (id);
+
 ALTER TABLE orders
     ADD COLUMN date_created DATE DEFAULT CURRENT_DATE;
+
+ALTER TABLE ordersAdd commentMore actions
+    ADD CONSTRAINT orders_pkey PRIMARY KEY (id);
 
 ALTER TABLE order_product
     ADD CONSTRAINT fk_product FOREIGN KEY (product_id)

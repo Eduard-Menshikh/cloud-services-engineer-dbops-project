@@ -22,6 +22,34 @@ jobs:
         tar -xzf flyway-commandline.tar.gz
         sudo ln -s `pwd`/flyway-11.1.0/flyway /usr/local/bin/flyway
         
+    - name: 🔍 Debug DB connection and permissions
+      env:
+        PGHOST: ${{ secrets.DB_HOST }}
+        PGPORT: ${{ secrets.DB_PORT }}
+        PGDATABASE: ${{ secrets.DB_NAME }}
+        PGUSER: ${{ secrets.DB_USER }}
+        PGPASSWORD: ${{ secrets.DB_PASSWORD }}
+      run: |
+        echo "🔌 Проверка подключения к PostgreSQL..."
+        psql -c "SELECT current_user, session_user;" || { echo "❌ Не удалось подключиться"; exit 1; }
+
+        echo "✅ Подключение успешно."
+
+        echo "🔍 Проверка прав на схему 'public'..."
+        psql -c "
+          SELECT n.nspname AS schema,
+                r.rolname AS grantee,
+                has_schema_privilege(r.rolname, n.nspname, 'USAGE') AS usage,
+                has_schema_privilege(r.rolname, n.nspname, 'CREATE') AS create
+          FROM pg_namespace n
+          JOIN pg_roles r ON r.rolname = current_user
+          WHERE n.nspname = 'public';
+        "
+
+        echo "📂 Проверка доступа к файловой системе миграций:"
+        ls -la migrations || echo "⚠️ migrations не найдены!"
+
+
     - name: Run Flyway migrations
       env:
         FLYWAY_URL: "jdbc:postgresql://${{ secrets.DB_HOST }}:${{ secrets.DB_PORT }}/${{ secrets.DB_NAME }}"

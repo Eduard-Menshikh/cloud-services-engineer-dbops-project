@@ -20,5 +20,5 @@ INSERT INTO order_product (quantity, order_id, product_id)
 SELECT
     floor(1 + random() * 50)::INT,
     i,
-    (1 + floor(random() * 6)::INT) % 6
+    floor(random() * 6)::INT
 FROM generate_series(1, 10000000) s(i);

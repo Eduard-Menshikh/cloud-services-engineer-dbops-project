@@ -7,7 +7,7 @@ ALTER TABLE product
 ALTER TABLE orders
     ADD COLUMN date_created DATE DEFAULT CURRENT_DATE;
 
-ALTER TABLE ordersAdd commentMore actions
+ALTER TABLE orders
     ADD CONSTRAINT orders_pkey PRIMARY KEY (id);
 
 ALTER TABLE order_product
